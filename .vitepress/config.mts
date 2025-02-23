@@ -24,6 +24,7 @@ export default withMermaid ({
           { text: 'File System Mount', link: '/mount' },
           { text: 'Design', link: '/design' },
           { text: 'Build', link: '/build' },
+          { text: 'Scale', link: '/scale' },
         ]
       }
     ],
@@ -58,6 +59,7 @@ export default withMermaid ({
               { text: '文件系统挂载', link: '/cn/mount' },
               { text: '设计', link: '/cn/design' },
               { text: '编译', link: '/cn/build' },
+              { text: '拓展', link: '/cn/scale' },
             ]
           }
         ],
