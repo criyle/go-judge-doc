@@ -1,13 +1,11 @@
 # Design
 
-## Documentation
-
-### Prerequisite
+## Prerequisite
 
 - Linux Kernel Version >= 3.10
 - Cgroup file system mounted at /sys/fs/cgroup. Usually done by systemd
 
-### Architecture
+## Architecture
 
 ```text
 +----------------------------------------------------------------------------------+
@@ -21,7 +19,7 @@
 +--------------------+----------------+---------------------+---------------+------+
 ```
 
-### Return Status
+## Return Status
 
 - Accepted: Program exited with status code 0 within time & memory limits
 - Memory Limit Exceeded: Program uses more memory than memory limits
@@ -43,7 +41,7 @@
   - Or, container create not successful (e.g. not privileged docker)
   - Or, other errors
 
-### Container Root Filesystem
+## Container Root Filesystem
 
 For linux platform, the default mounts points are bind mounting host's `/lib`, `/lib64`, `/usr`, `/bin`, `/etc/ld.so.cache`, `/etc/alternatives`, `/etc/fpc.cfg`, `/dev/null`, `/dev/urandom`, `/dev/random`, `/dev/zero`, `/dev/full` and mounts tmpfs at `/w`, `/tmp` and creates `/proc`.
 
@@ -55,36 +53,44 @@ If a file named `/.env` exists in the container rootfs, the container will load 
 
 If a bind mount is specifying a target within the previous mounted one, please ensure the target exists in the previous mount point.
 
-### Packages
+## Packages
 
 - envexec: run single / group of programs in parallel within restricted environment and resource constraints
 - env: reference implementation environments to inject into envexec
 
-### Windows Support
+## Windows Support
 
 - Build `go-judge` by: `go build ./cmd/go-judge/`
 - Build `go_judge.dll`: (need to install `gcc` as well) `go build -buildmode=c-shared -o go_judge.so ./cmd/go-judge-ffi/`
 - Run: `./go-judge`
 
-#### Windows Security
+### Windows Security
 
 - Resources are limited by [JobObject](https://docs.microsoft.com/en-us/windows/win32/procthread/job-objects)
 - Privilege are limited by [Restricted Low Mandatory Level Token](https://docs.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
 - Low Mandatory Level directory is created for read / write
 
-### MacOS Support
+## MacOS Support
 
 - Build `go-judge` by: `go build ./cmd/go-judge/`
 - Build `go_judge.dylib`: (need to install `XCode`) `go build -buildmode=c-shared -o go_judge.dylib ./cmd/go-judge-ffi/`
 - Run: `./go-judge`
 
-#### MacOS Security
+### MacOS Security
 
 - `sandbox-init` profile deny network access and file read / write and read / write to `/Users` directory
 
-### Notice
+## Notice
 
-#### cgroup v2 support
+### cgroup usage
+
+For cgroup v1, the `go-judge` need root privilege to create `cgroup`. Either creates sub-directory `/sys/fs/cgroup/cpuacct/gojudge`, `/sys/fs/cgroup/memory/gojudge`, `/sys/fs/cgroup/pids/gojudge` and make execution user readable or use `sudo` to run it.
+
+For cgroup v2, systemd dbus will be used to create a transient scope for cgroup integration.
+
+If no permission to create cgroup, the cgroup related limit will not be effective.
+
+### cgroup v2 support
 
 The cgroup v2 is supported by `go-judge` now when running as root since more Linux distribution are enabling cgroup v2 by default (e.g. Ubuntu 21.10+, Fedora 31+). However, for kernel < 5.19, due to missing `memory.max_usage_in_bytes` in `memory` controller, the memory usage is now accounted by `maxrss` returned by `wait4` syscall. Thus, the memory usage appears higher than those who uses cgroup v1. For kernel >= 5.19, `memory.peak` is being used.
 
@@ -94,7 +100,7 @@ When running in Linux distributions powered by `systemd`, the `go-judge` will co
 
 When running with kernel >= 5.7, the `go-judge` will try faster `clone3(CLONE_INTO_CGROUP)` method.
 
-#### Memory Usage
+### Memory Usage
 
 The controller will consume `20M` memory and each container will consume `20M` + size of tmpfs `2 * 128M`. For each request, it consumes as much as user program limit + extra limit (`16k`) + total copy out max. Notice that the cached file stores in the shared memory (`/dev/shm`) of the host, so please ensure enough size allocated.
 
@@ -105,7 +111,7 @@ Due to limitation of GO runtime, the memory will not return to OS automatically,
 - `-force-gc-target` default `20m`, the minimal size to trigger GC
 - `-force-gc-interval` default `5s`, the interval to check memory usage
 
-### Benchmark
+## Benchmark
 
 By `wrk` with `t.lua`: `wrk -s t.lua -c 1 -t 1 -d 30s --latency http://localhost:5050/run`.
 
