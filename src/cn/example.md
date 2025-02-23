@@ -1,6 +1,6 @@
 # 示例
 
-请使用 postman 或其他 REST API 调试工具向 http://localhost:5050/run 发送请求
+请使用 postman 或其他 REST API 调试工具向 `http://localhost:5050/run` 发送请求
 
 <details><summary>单个c++文件编译运行</summary>
 
