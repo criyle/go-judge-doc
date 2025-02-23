@@ -31,3 +31,63 @@ Run `./go-judge-proxy`, connect to gRPC endpoint expose as a REST endpoint.
 Build `go build ./cmd/go-judge-shell`
 
 Run `./go-judge-shell`, connect to gRPC endpoint with interactive shell.
+
+## Build Docker
+
+Create `Dockerfile` with the following content `go-judge` repository and run `docker build -t go-judge .`.
+
+:::code-group
+
+```dockerfile [golang]
+FROM golang:latest AS build 
+
+WORKDIR /go/judge
+
+COPY go.mod go.sum /go/judge/
+
+RUN go mod download -x
+
+COPY ./ /go/judge
+
+RUN go generate ./cmd/go-judge/version \
+    && CGO_ENABLE=0 go build -v -tags grpcnotrace,nomsgpack -o go-judge ./cmd/go-judge 
+
+FROM debian:latest
+
+WORKDIR /opt
+
+COPY --from=build /go/judge/go-judge /go/judge/mount.yaml /opt/
+
+EXPOSE 5050/tcp 5051/tcp
+
+ENTRYPOINT ["./go-judge"]
+```
+
+```dockerfile [alpine]
+FROM golang:alpine AS build
+
+WORKDIR /go/judge 
+
+RUN apk update && apk add git
+
+COPY go.mod go.sum /go/judge/
+
+RUN go mod download -x
+
+COPY ./ /go/judge
+
+RUN go generate ./cmd/go-judge/version \
+    && CGO_ENABLE=0 go build -v -tags grpcnotrace,nomsgpack -o go-judge ./cmd/go-judge
+
+FROM alpine:latest
+
+WORKDIR /opt
+
+COPY --from=build /go/judge/go-judge /go/judge/mount.yaml /opt/
+
+EXPOSE 5050/tcp 5051/tcp
+
+ENTRYPOINT ["./go-judge"]
+```
+
+:::

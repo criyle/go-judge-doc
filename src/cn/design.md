@@ -3,7 +3,7 @@
 ## 运行要求
 
 - Linux 内核版本 >= 3.10
-- 系统 Cgroup 文件系统挂载于 `/sys/fs/cgroup`（Systemd 默认）
+- 系统 Cgroup 文件系统挂载于 `/sys/fs/cgroup` (Systemd 默认)
 
 ## 系统架构
 
