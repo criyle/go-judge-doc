@@ -7,16 +7,13 @@
 
 ## Architecture
 
-```text
-+----------------------------------------------------------------------------------+
-| Transport Layer (HTTP / WebSocket / FFI / ...)                                   |
-+----------------------------------------------------------------------------------+
-| Sandbox Worker (Environment Pool w/ Environment Builder )                        |
-+-----------------------------------------------------------+----------------------+
-| EnvExec                                                   | File Store           |
-+--------------------+----------------+---------------------+---------------+------+
-| Linux (go-sandbox) | Windows (winc) | macOS (app sandbox) | Shared Memory | Disk |
-+--------------------+----------------+---------------------+---------------+------+
+```mermaid
+block-beta
+  columns 5
+  a["Transport Layer"]:5
+  b["Sandbox Worker"]:5
+  c["EnvExec"]:3 d["File Store"]:2
+  e["Linux (go-sandbox)"] f["Windows (winc)"] g["macOS (app sandbox)"] h["Shared Memory"] i["Disk"]
 ```
 
 ## Return Status
