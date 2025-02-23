@@ -21,6 +21,7 @@ export default defineConfig({
           { text: 'API', link: '/api' },
           { text: 'Example Requests', link: '/example' },
           { text: 'Configuration', link: '/configuration' },
+          { text: 'File System Mount', link: '/mount' },
           { text: 'Design', link: '/design' },
           { text: 'Build', link: '/build' },
         ]
@@ -54,6 +55,7 @@ export default defineConfig({
               { text: 'API', link: '/cn/api' },
               { text: '请求实例', link: '/cn/example' },
               { text: '配置', link: '/cn/configuration' },
+              { text: '文件系统挂载', link: '/cn/mount' },
               { text: '设计', link: '/cn/design' },
               { text: '编译', link: '/cn/build' },
             ]

@@ -41,18 +41,6 @@
   - Or, container create not successful (e.g. not privileged docker)
   - Or, other errors
 
-## Container Root Filesystem
-
-For linux platform, the default mounts points are bind mounting host's `/lib`, `/lib64`, `/usr`, `/bin`, `/etc/ld.so.cache`, `/etc/alternatives`, `/etc/fpc.cfg`, `/dev/null`, `/dev/urandom`, `/dev/random`, `/dev/zero`, `/dev/full` and mounts tmpfs at `/w`, `/tmp` and creates `/proc`.
-
-To customize mount points, please look at example `mount.yaml` file.
-
-`tmpfs` size for `/w` and `/tmp` is configured through `-tmp-fs-param` with default value `size=128m,nr_inodes=4k`
-
-If a file named `/.env` exists in the container rootfs, the container will load the file as environment variable line by line.
-
-If a bind mount is specifying a target within the previous mounted one, please ensure the target exists in the previous mount point.
-
 ## Packages
 
 - envexec: run single / group of programs in parallel within restricted environment and resource constraints
