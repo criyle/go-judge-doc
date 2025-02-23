@@ -9,10 +9,10 @@ hero:
   actions:
     - theme: brand
       text: Quick Start
-      link: /markdown-examples
+      link: /install
     - theme: alt
       text: Documentations
-      link: /api-examples
+      link: /api
 
 features:
   - title: Fast

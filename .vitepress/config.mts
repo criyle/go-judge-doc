@@ -5,19 +5,24 @@ export default defineConfig({
   title: "Go Judge Documentation",
   description: "Go Judge Documentation",
   srcDir: "src",
+  cleanUrls: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Documentation', link: '/install' }
     ],
 
     sidebar: [
       {
-        text: 'Examples',
+        text: 'Documentations',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'Install', link: '/install' },
+          { text: 'API', link: '/api' },
+          { text: 'Example Requests', link: '/example' },
+          { text: 'Configuration', link: '/configuration' },
+          { text: 'Design', link: '/design' },
+          { text: 'Build', link: '/build' },
         ]
       }
     ],
@@ -25,5 +30,36 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/criyle/go-judge' }
     ]
+  },
+  locales: {
+    root: {
+      label: 'English',
+      lang: 'en',
+    },
+    cn: {
+      label: '中文',
+      lang: 'cn',
+      title: "Go Judge 文档",
+      themeConfig: {
+        nav: [
+          { text: '主页', link: '/cn' },
+          { text: '文档', link: '/cn/install' }
+        ],
+
+        sidebar: [
+          {
+            text: '文档',
+            items: [
+              { text: '安装', link: '/cn/install' },
+              { text: 'API', link: '/cn/api' },
+              { text: '请求实例', link: '/cn/example' },
+              { text: '配置', link: '/cn/configuration' },
+              { text: '设计', link: '/cn/design' },
+              { text: '编译', link: '/cn/build' },
+            ]
+          }
+        ],
+      }
+    }
   }
 })
