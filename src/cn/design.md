@@ -108,3 +108,80 @@ Running 30s test @ http://localhost:5050/run
 Requests/sec:    864.88
 Transfer/sec:    234.68KB
 ```
+
+## go-judge 容器协议
+
+```mermaid
+sequenceDiagram
+
+box 主机
+participant u as go-judge 容器 api
+participant s as 容器环境
+end
+
+create participant c
+s ->> c: 创建环境隔离容器
+
+loop 容器服务循环
+alt execve 请求
+
+u ->> s: execve
+
+s ->> c: execve 命令 <br/> argv, envv, fd, rlimits等
+create participant e
+c ->> e: fork & map fd & 限制特权 <br/> 内核 >= 5.7 w/ cgroup v2 时使用 <br/> clone3(CLONE_INTO_CGROUP)
+
+opt 同步 cgroup (内核 < 5.7)
+e ->> c: 初始化成功
+activate e
+note over e: 暂停等待 ack
+c ->> s: 同步请求: pid
+note over s: 同步: 往 cgroup 添加 pid
+s ->> c: ack
+c ->> e: 同步完成
+deactivate e
+note over e: 继续执行
+end
+
+note over e: execve
+
+opt 同步 (内核 >= 5.7 w/ cgroup v2)
+e ->> c: 初始化成功
+c ->> s: 同步请求
+note over s: 同步: 关闭 cgroup fd
+s ->> c: ack
+end
+
+alt 正常结束
+e ->> c: waitpid 返回
+c ->> s: 运行结果
+s ->> c: kill
+c ->> e: kill all 
+else 强制终止 (TLE, MLE, etc)
+s ->> c: kill
+c ->> e: kill all 
+e ->> c: waitpid 返回
+c ->> s: 运行结果
+end
+
+destroy e
+e ->> c: 收集所有僵尸进程完成
+c ->> s: 命令完成
+
+s ->> u: execve 运行结果
+
+else conf / ping / open / delete / reset 
+
+u ->> s: 调用 api
+s ->> c: 发送命令
+c ->> s: 命令执行结果
+s ->> u: 返回执行结果
+
+end
+end
+
+box container
+participant c as 容器 init 进程
+participant e as 用户程序
+end
+```

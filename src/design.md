@@ -129,3 +129,79 @@ Requests/sec:    864.88
 Transfer/sec:    234.68KB
 ```
 
+## go-judge Container Protocol
+
+```mermaid
+sequenceDiagram
+
+box host
+participant u as go-judge container api
+participant s as container environment
+end
+
+create participant c
+s ->> c: create isolated container
+
+loop container server
+alt execve request
+
+u ->> s: execve
+
+s ->> c: execve command <br/> argv, envv, fd, rlimits, etc
+create participant e
+c ->> e: fork & map fd & drop caps <br/> clone3(CLONE_INTO_CGROUP) <br/> on kernel >= 5.7 w/ cgroup v2
+
+opt sync cgroup (kernel < 5.7)
+e ->> c: init success
+activate e
+note over e: pause & wait ack
+c ->> s: sync request: pid
+note over s: sync: add pid into cgroup
+s ->> c: ack
+c ->> e: sync done
+deactivate e
+note over e: continue
+end
+
+note over e: execve
+
+opt sync after exec (kernel >= 5.7 w/ cgroup v2)
+e ->> c: init success
+c ->> s: sync request
+note over s: sync: close cgroup fd
+s ->> c: ack
+end
+
+alt program exit normally
+e ->> c: waitpid returns
+c ->> s: execution result
+s ->> c: kill
+c ->> e: kill all 
+else abort (TLE, MLE, etc)
+s ->> c: kill
+c ->> e: kill all 
+e ->> c: waitpid returns
+c ->> s: execution result
+end
+
+destroy e
+e ->> c: all zombies collected
+c ->> s: finished
+
+s ->> u: execve result
+
+else conf / ping / open / delete / reset 
+
+u ->> s: call api
+s ->> c: send command
+c ->> s: command result
+s ->> u: return result
+
+end
+end
+
+box container
+participant c as container init 
+participant e as user program
+end
+```
