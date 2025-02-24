@@ -16,6 +16,33 @@ block-beta
   e["Linux (go-sandbox)"] f["Windows (winc)"] g["macOS (app sandbox)"] h["Shared Memory"] i["Disk"]
 ```
 
+## Execution Workflow
+
+```mermaid
+flowchart TB
+
+s((Start)) --> copyIn
+
+subgraph copyIn[copy in * n]
+oh[open host file] --> oc[open container file]
+oc --> cc[copy file content]
+end
+
+copyIn --> exe[start program in container with restrictions]
+wait(wait program to exit & check resource usages)
+exe --> wait
+wait --> copyOut
+
+subgraph copyOut[copy out * n]
+oho[open host file] --> oco[open container file]
+oco --> cco[copy file content]
+end
+
+readStat(Read Statistic)
+copyOut --> readStat
+readStat --> e((end))
+```
+
 ## Return Status
 
 - Accepted: Program exited with status code 0 within time & memory limits
@@ -129,13 +156,13 @@ Requests/sec:    864.88
 Transfer/sec:    234.68KB
 ```
 
-## go-judge Container Protocol
+## go-sandbox Container Protocol
 
 ```mermaid
 sequenceDiagram
 
 box host
-participant u as go-judge container api
+participant u as go-sandbox container api
 participant s as container environment
 end
 

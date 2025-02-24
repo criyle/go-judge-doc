@@ -18,11 +18,11 @@ export default withMermaid ({
         text: 'Documentations',
         items: [
           { text: 'Install', link: '/install' },
+          { text: 'Design', link: '/design' },
           { text: 'API', link: '/api' },
           { text: 'Example Requests', link: '/example' },
           { text: 'Configuration', link: '/configuration' },
           { text: 'File System Mount', link: '/mount' },
-          { text: 'Design', link: '/design' },
           { text: 'Build', link: '/build' },
           { text: 'Scale', link: '/scale' },
         ]
@@ -53,11 +53,11 @@ export default withMermaid ({
             text: '文档',
             items: [
               { text: '安装', link: '/cn/install' },
+              { text: '设计', link: '/cn/design' },
               { text: 'API', link: '/cn/api' },
               { text: '请求实例', link: '/cn/example' },
               { text: '配置', link: '/cn/configuration' },
               { text: '文件系统挂载', link: '/cn/mount' },
-              { text: '设计', link: '/cn/design' },
               { text: '编译', link: '/cn/build' },
               { text: '拓展', link: '/cn/scale' },
             ]

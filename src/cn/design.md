@@ -16,6 +16,33 @@ block-beta
   e["Linux (go-sandbox)"] f["Windows (winc)"] g["macOS (app sandbox)"] h["共享内存"] i["磁盘"]
 ```
 
+## 工作流
+
+```mermaid
+flowchart TB
+
+s((开始)) --> copyIn
+
+subgraph copyIn[copy in * n]
+oh[打开宿主机文件] --> oc[打开容器文件]
+oc --> cc[复制文件内容]
+end
+
+copyIn --> exe[在容器内运行资源受限的用户程序]
+wait(等待用户程序结束，同时检查资源使用情况)
+exe --> wait
+wait --> copyOut
+
+subgraph copyOut[copy out * n]
+oho[打开宿主机文件] --> oco[打开容器文件]
+oco --> cco[复制文件内容]
+end
+
+readStat(读取资源使用)
+copyOut --> readStat
+readStat --> e((结束))
+```
+
 ## /run 接口返回状态
 
 - Accepted: 程序在资源限制内正常退出
@@ -109,13 +136,13 @@ Requests/sec:    864.88
 Transfer/sec:    234.68KB
 ```
 
-## go-judge 容器协议
+## go-sandbox 容器协议
 
 ```mermaid
 sequenceDiagram
 
 box 主机
-participant u as go-judge 容器 api
+participant u as go-sandbox 容器 api
 participant s as 容器环境
 end
 
