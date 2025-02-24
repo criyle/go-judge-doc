@@ -2,6 +2,35 @@
 
 ## 容器的文件系统
 
+```mermaid
+flowchart LR
+
+subgraph 主机
+hbin["/bin,/usr<br/>/etc/ld.so.cache"]
+hlib["/lib,/lib64"]
+hal["/etc/alternatives<br/>编译器的配置文件路径"]
+hdev["/dev/{null,urandom,random,zero,full}"]
+huid["uid,gid"]
+end
+
+subgraph 容器
+cbin["/bin,/usr<br/>/etc/ld.so.cache"]
+clib["/lib,/lib64"]
+cal["/etc/alternatives<br/>编译器的配置文件路径"]
+cdev["/dev/{null,urandom,random,zero,full}"]
+proc["/proc (只读并且遮蔽部分敏感内容)"]
+temp["/w,/tmp (限制大小的可写 tmpfs)"]
+cuid["uid,gid"]
+net["隔离的网络"]
+end
+
+hbin -- 二进制文件 (只读) --> cbin
+hlib -- 共享库 (只读) --> clib
+hal -- 编译器配置文件 (只读) --> cal
+hdev <-- 常用设备 (可读写) --> cdev
+huid -- uid/gid 映射 & 降权为普通用户 --> cuid
+```
+
 在 Linux 平台，默认只读挂载点包括主机的 `/lib`, `/lib64`, `/usr`, `/bin`, `/etc/ld.so.cache`, `/etc/alternatives`, `/etc/fpc.cfg`, `/dev/null`, `/dev/urandom`, `/dev/random`, `/dev/zero`, `/dev/full` 和临时文件系统 `/w`, `/tmp` 以及 `/proc`。
 
 使用 `mount.yaml` 定制容器文件系统。
@@ -13,6 +42,8 @@
 如果之后指定的挂载点目标在之前的挂载点之下，那么需要保证之前的挂载点存在目标文件或者文件夹。
 
 ## 自定义挂载
+
+请将接下来的文件命名为 `mount.yaml` 并保存你的配置目录，然后为 `go-judge` 指定 `-mount-conf 你的配置目录/mount.yaml` 命令行参数启动。在添加配置后，请留意输出的 log 来确保配置文件生效。
 
 :::code-group
 
@@ -94,11 +125,11 @@ mount:
   # - type: tmpfs
   #   target: /dev/shm
   #   data: size=64m,nr_inodes=4k
-  # （可选）挂载 /etc/passwd 显示用户名
+  # （可选）挂载 /etc/passwd 显示用户名，例子在特殊文件部分
   - type: bind
     source: containerPasswd.txt
     target: /etc/passwd
-  # （可选） 挂载 /.env 加载自定义环境变量 
+  # （可选） 挂载 /.env 加载自定义环境变量，例子在特殊文件部分
   - type: bind
     source: dotenv
     target: /.env
@@ -110,9 +141,9 @@ mount:
   #  # readonly: true
 # java & ghc wants /proc/self/exe
 proc: true
-# procrw enables read-write permission on /proc for special usage like CUDA
+# procrw 给予 /proc 可读写权限，在特殊情况下需要。例如 CUDA
 #procrw: true
-# create /dev standard io
+# （可选） 创建常用软连接。如果留空，则默认配置如下
 symLink:
   - linkPath: /dev/fd
     target: /proc/self/fd
@@ -122,7 +153,7 @@ symLink:
     target: /proc/self/fd/1
   - linkPath: /dev/stderr
     target: /proc/self/fd/2
-# mask mounted paths with empty / null mount
+# （可选）遮蔽部分系统敏感文件。如果留空，则默认配置如下
 maskPath:
   - /sys/firmware
   - /sys/devices/virtual/powercap
@@ -137,18 +168,18 @@ maskPath:
   - /proc/scsi
   - /usr/lib/wsl/drivers
   - /usr/lib/wsl/lib
-# container work directory
+# 容器工作目录
 workDir: /w
-# container host name
+# 容器 host name
 hostName: go-judge
-# container domain name
+# 容器 domain name
 domainName: go-judge
-# container user uid
+# 容器用户 id
 uid: 1536
-# container user gid
+# 容器用户组 id
 gid: 1536
-# init cmd does additional setups
 # MPI want network
+# 在沙箱初始化之后额外执行的命令，例如接下来的命令时初始化容器本地回环网络
 #initCmd: ip link set dev lo up
 ```
 
@@ -164,9 +195,8 @@ go-judge:x:1536:1536::/w:/bin/bash
 ```
 
 ```text [dotenv]
-# /.env file should contain environment variable line by line
-# empty line or line start with # are ignored
-# double quote is not parsed and should not be used
+# /.env 文件指定默认环境变量，每行一个
+# 空行和 # 开始的注释会被忽略，不需要给环境变量加上双引号
 TESTENV=true
 ```
 
