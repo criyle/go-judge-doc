@@ -2,11 +2,13 @@
 
 请使用 postman 或其他 REST API 调试工具向 `http://localhost:5050/run` 发送请求
 
-<details><summary>单个c++文件编译运行</summary>
+## 单个c++文件编译运行
 
 这个例子需要安装 `g++`。如果在 docker 环境中运行，请在容器中（`docker exec -it go-judge /bin/bash`）执行 `apt update && apt install g++`
 
 需要注意，在生产环境中 `copyOutCached` 产生的文件在使用完之后需要使用（`DELETE /file/:id`）删除避免内存泄露
+
+### 编译请求
 
 ```json
 {
@@ -49,11 +51,13 @@
             "stdout": ""
         },
         "fileIds": {
-            "a": "5LWIZAA45JHX4Y4Z"
+            "a": "5LWIZAA45JHX4Y4Z" // 需要保存编译的二进制文件 id
         }
     }
 ]
 ```
+
+### 运行请求
 
 ```json
 {
@@ -97,9 +101,9 @@
 ]
 ```
 
-</details>
+运行完成后，请调用 `DELETE /file/:id` 删除编译的二进制文件，避免缓存泄漏。
 
-<details><summary>多个程序（例如交互题）</summary>
+## 多个程序（例如交互题）
 
 ```json
 {
@@ -170,9 +174,7 @@
 ]
 ```
 
-</details>
-
-<details><summary>开启 CPURate 限制的死循环</summary>
+## 开启 CPURate 限制的死循环
 
 ```json
 {
@@ -208,5 +210,3 @@
     }
 ]
 ```
-
-</details>
