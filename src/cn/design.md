@@ -74,6 +74,9 @@ readStat --> e((结束))
 
 ## 注意
 
+> [!WARNING]  
+> Window 和 macOS 平台为实验性支持，请不要在生产环境使用
+
 ### 使用 cgroup
 
 在 cgroup v1 系统上 `go-judge` 需要 `root` 权限创建 `cgroup`。请使用 `sudo` 以 `root` 用户运行或者确保运行用户拥有以下目录的读写权限 `/sys/fs/cgroup/cpuacct/gojudge`, `/sys/fs/cgroup/memory/gojudge`, `/sys/fs/cgroup/pids/gojudge`。

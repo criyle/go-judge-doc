@@ -94,6 +94,9 @@ readStat --> e((end))
 
 ## Notice
 
+> [!WARNING]  
+> Window and macOS support are experimental and should not be used in production environments
+
 ### cgroup usage
 
 For cgroup v1, the `go-judge` need root privilege to create `cgroup`. Either creates sub-directory `/sys/fs/cgroup/cpuacct/gojudge`, `/sys/fs/cgroup/memory/gojudge`, `/sys/fs/cgroup/pids/gojudge` and make execution user readable or use `sudo` to run it.
