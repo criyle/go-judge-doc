@@ -17,35 +17,7 @@
 ## REST API 接口定义
 
 ```typescript
-interface LocalFile {
-    src: string; // 文件绝对路径
-}
-
-interface MemoryFile {
-    content: string | Buffer; // 文件内容
-}
-
-interface PreparedFile {
-    fileId: string; // 文件 id
-}
-
-interface Collector {
-    name: string; // copyOut 文件名
-    max: number;  // 最大大小限制
-    pipe?: boolean; // 通过管道收集（默认值为false文件收集）
-}
-
-interface Symlink {
-    symlink: string; // 符号连接目标 (v1.6.0+)
-}
-
-interface StreamIn {
-    streamIn: boolean; // 流式输入 (v1.8.1+)
-}
-
-interface StreamOut {
-    streamOut: boolean; // 流式输出 (v1.8.1+)
-}
+type run = (request: Request) => []Result;
 
 interface Cmd {
     args: string[]; // 程序命令行参数
@@ -79,6 +51,22 @@ interface Cmd {
     copyOutMax?: number;
 }
 
+interface Result {
+    status: Status;
+    error?: string; // 详细错误信息
+    exitStatus: number; // 程序返回值
+    time: number;   // 程序运行 CPU 时间，单位纳秒
+    memory: number; // 程序运行内存，单位 byte
+    procPeak?: number; // 程序运行最大线程数量（需要内核版本>=6.1，且开启 cgroup v2）
+    runTime: number; // 程序运行现实时间，单位纳秒
+    // copyOut 和 pipeCollector 指定的文件内容
+    files?: {[name:string]:string};
+    // copyFileCached 指定的文件 id
+    fileIds?: {[name:string]:string};
+    // 文件错误详细信息
+    fileError?: FileError[];
+}
+
 enum Status {
     Accepted = 'Accepted', // 正常情况
     MemoryLimitExceeded = 'Memory Limit Exceeded', // 内存超限
@@ -89,6 +77,43 @@ enum Status {
     Signalled = 'Signalled', // 进程被信号终止
     InternalError = 'Internal Error', // 内部错误
 }
+
+interface Request {
+    requestId?: string; // 给 WebSocket 使用来区分返回值的来源请求
+    cmd: Cmd[];
+    pipeMapping: PipeMap[];
+}
+
+interface LocalFile {
+    src: string; // 文件绝对路径
+}
+
+interface MemoryFile {
+    content: string | Buffer; // 文件内容
+}
+
+interface PreparedFile {
+    fileId: string; // 文件 id
+}
+
+interface Collector {
+    name: string; // copyOut 文件名
+    max: number;  // 最大大小限制
+    pipe?: boolean; // 通过管道收集（默认值为false文件收集）
+}
+
+interface Symlink {
+    symlink: string; // 符号连接目标 (v1.6.0+)
+}
+
+interface StreamIn {
+    streamIn: boolean; // 流式输入 (v1.8.1+)
+}
+
+interface StreamOut {
+    streamOut: boolean; // 流式输出 (v1.8.1+)
+}
+
 
 interface PipeIndex {
     index: number; // cmd 的下标
@@ -124,34 +149,12 @@ interface FileError {
     message?: string; // 错误信息
 }
 
-interface Request {
-    requestId?: string; // 给 WebSocket 使用来区分返回值的来源请求
-    cmd: Cmd[];
-    pipeMapping: PipeMap[];
-}
-
 interface CancelRequest {
     cancelRequestId: string; // 取消某个正在进行中的请求
 };
 
 // WebSocket 请求
 type WSRequest = Request | CancelRequest;
-
-interface Result {
-    status: Status;
-    error?: string; // 详细错误信息
-    exitStatus: number; // 程序返回值
-    time: number;   // 程序运行 CPU 时间，单位纳秒
-    memory: number; // 程序运行内存，单位 byte
-    procPeak?: number; // 程序运行最大线程数量（需要内核版本>=6.1，且开启 cgroup v2）
-    runTime: number; // 程序运行现实时间，单位纳秒
-    // copyOut 和 pipeCollector 指定的文件内容
-    files?: {[name:string]:string};
-    // copyFileCached 指定的文件 id
-    fileIds?: {[name:string]:string};
-    // 文件错误详细信息
-    fileError?: FileError[];
-}
 
 // WebSocket 结果
 interface WSResult {

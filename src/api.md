@@ -17,35 +17,7 @@ A REST service to run program in restricted environment (Listening on `localhost
 ## REST API Interface
 
 ```typescript
-interface LocalFile {
-    src: string; // absolute path for the file
-}
-
-interface MemoryFile {
-    content: string | Buffer; // file contents
-}
-
-interface PreparedFile {
-    fileId: string; // fileId defines file uploaded by /file
-}
-
-interface Collector {
-    name: string; // file name in copyOut
-    max: number;  // maximum bytes to collect from pipe
-    pipe?: boolean; // collect over pipe or not (default false)
-}
-
-interface Symlink {
-    symlink: string; // symlink destination (v1.6.0+)
-}
-
-interface StreamIn {
-    streamIn: boolean; // stream input (v1.8.1+)
-}
-
-interface StreamOut {
-    streamOut: boolean; // stream output (v1.8.1+)
-}
+type run = (request: Request) => []Result;
 
 interface Cmd {
     args: string[]; // command line argument
@@ -83,6 +55,22 @@ interface Cmd {
     copyOutMax?: number; // byte
 }
 
+interface Result {
+    status: Status;
+    error?: string; // potential system error message
+    exitStatus: number;
+    time: number;   // ns (cgroup recorded time)
+    memory: number; // byte
+    runTime: number; // ns (wall clock time)
+    procPeak?: number; // peak number of process (cgroup v2, kernel >= 6.1)
+    // copyFile name -> content
+    files?: {[name:string]:string};
+    // copyFileCached name -> fileId
+    fileIds?: {[name:string]:string};
+    // fileError contains detailed file errors
+    fileError?: FileError[];
+}
+
 enum Status {
     Accepted = 'Accepted', // normal
     MemoryLimitExceeded = 'Memory Limit Exceeded', // mle
@@ -92,6 +80,42 @@ enum Status {
     NonzeroExitStatus = 'Nonzero Exit Status',
     Signalled = 'Signalled',
     InternalError = 'Internal Error', // system error
+}
+
+interface Request {
+    requestId?: string; // for WebSocket requests
+    cmd: Cmd[];
+    pipeMapping?: PipeMap[];
+}
+
+interface LocalFile {
+    src: string; // absolute path for the file
+}
+
+interface MemoryFile {
+    content: string | Buffer; // file contents
+}
+
+interface PreparedFile {
+    fileId: string; // fileId defines file uploaded by /file
+}
+
+interface Collector {
+    name: string; // file name in copyOut
+    max: number;  // maximum bytes to collect from pipe
+    pipe?: boolean; // collect over pipe or not (default false)
+}
+
+interface Symlink {
+    symlink: string; // symlink destination (v1.6.0+)
+}
+
+interface StreamIn {
+    streamIn: boolean; // stream input (v1.8.1+)
+}
+
+interface StreamOut {
+    streamOut: boolean; // stream output (v1.8.1+)
 }
 
 interface PipeIndex {
@@ -129,34 +153,12 @@ interface FileError {
     message?: string; // detailed message
 }
 
-interface Request {
-    requestId?: string; // for WebSocket requests
-    cmd: Cmd[];
-    pipeMapping?: PipeMap[];
-}
-
 interface CancelRequest {
     cancelRequestId: string;
 };
 
 // WebSocket request
 type WSRequest = Request | CancelRequest;
-
-interface Result {
-    status: Status;
-    error?: string; // potential system error message
-    exitStatus: number;
-    time: number;   // ns (cgroup recorded time)
-    memory: number; // byte
-    runTime: number; // ns (wall clock time)
-    procPeak?: number; // peak number of process (cgroup v2, kernel >= 6.1)
-    // copyFile name -> content
-    files?: {[name:string]:string};
-    // copyFileCached name -> fileId
-    fileIds?: {[name:string]:string};
-    // fileError contains detailed file errors
-    fileError?: FileError[];
-}
 
 // WebSocket results
 interface WSResult {
