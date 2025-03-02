@@ -212,3 +212,19 @@ type =
 ```
 
 Any incomplete / invalid message will be treated as error.
+
+## Client Implementation Suggestion
+
+Although the sandbox is designed to be stateless, the existence of cached file make it stateful. Thus, the client library should take care the cache file to avoid leakage, which is bad since it will remain in the memory / swap.
+
+The client library could provide a structure to group the requests like `context`, `arena`, `task`, etc., which behaves like regular client but records all the files cached by the `run` command. And the structure should have a clean-up function like `clean`, `close`, `shutdown`, `destroy`, etc. to safely delete all the files related to the structure. Also, the structure could provide functionality to create child structure that tracked by the parent structure to ensure every file is being tracked correctly. In this case, when child structure finishes its work, it can clean up the cache to release the resource earlier.
+
+```mermaid
+flowchart LR
+id1([root]) --> id2[[cached compiled files]]
+id1 --> id3([test case 1])
+id3 --> id4[[cached test outputs]]
+id1 --> id5([test case 2])
+id5 --> id6[[cached test outputs]]
+id1 --> id7([test case x])
+```
