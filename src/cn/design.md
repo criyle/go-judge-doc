@@ -194,11 +194,10 @@ e ->> c: waitpid 返回
 c ->> s: 运行结果
 end
 
+s ->> u: execve 运行结果
+
 destroy e
 e ->> c: 收集所有僵尸进程完成
-c ->> s: 命令完成
-
-s ->> u: execve 运行结果
 
 else conf / ping / open / delete / reset 
 

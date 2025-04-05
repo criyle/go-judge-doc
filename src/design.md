@@ -214,11 +214,10 @@ e ->> c: waitpid returns
 c ->> s: execution result
 end
 
+s ->> u: execve result
+
 destroy e
 e ->> c: all zombies collected
-c ->> s: finished
-
-s ->> u: execve result
 
 else conf / ping / open / delete / reset 
 

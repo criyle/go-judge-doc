@@ -213,6 +213,17 @@ type =
 
 Any incomplete / invalid message will be treated as error.
 
+## Prometheus Monitor API
+
+When monitor endpoint enabled by `-enable-metrics` command line argument, key metrics will be provided in `prometheus` format at `localhost:5052` by default. Including
+
+- Worker goroutine count, worker queue length, container count
+- CPU, Memory usage of execution result
+- CPU, Memory usage of container and controller
+- Usage of cache file system
+
+After collecting metrics via [Prometheus](https://prometheus.io), you may utilize [this Grafana template](https://grafana.com/grafana/dashboards/23188-sandbox/) for dashboard monitoring.
+
 ## Client Implementation Suggestion
 
 Although the sandbox is designed to be stateless, the existence of cached file make it stateful. Thus, the client library should take care the cache file to avoid leakage, which is bad since it will remain in the memory / swap.
