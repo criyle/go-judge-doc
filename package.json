@@ -5,7 +5,8 @@
     "vitepress-plugin-mermaid": "^2.0.17"
   },
   "optionalDependencies": {
-    "@esbuild/linux-x64": "0.25.2"
+    "@esbuild/linux-x64": "0.25.2",
+    "@rollup/rollup-darwin-arm64": "^4.39.0"
   },
   "scripts": {
     "dev": "vitepress dev",
