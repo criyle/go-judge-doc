@@ -4,6 +4,9 @@
     "vitepress": "^1.6.3",
     "vitepress-plugin-mermaid": "^2.0.17"
   },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "0.25.2"
+  },
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
