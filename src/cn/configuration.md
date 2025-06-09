@@ -35,6 +35,7 @@
 - 使用 `-file-timeout` 指定文件存储文件最大时间。超出时间的文件将会删除。（举例 `30m`）
 - 使用 `-mount-conf` 指定沙箱文件系统挂载细节，详细请参见 `mount.yaml` (仅 Linux)
 - 使用 `-container-init-path` 指定 `cinit` 路径 (请不要使用，仅 debug) (仅 Linux)
+- 使用 `-no-fallback` 在创建 `cgroup` 失败退出程序，而不是自动会退到 `rlimit` / `rusage` 模式 (仅 Linux)
 
 ## 环境变量
 

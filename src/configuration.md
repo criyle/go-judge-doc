@@ -1,4 +1,4 @@
-# Command Line Arguments
+# Configurations
 
 ## Command Line Arguments
 
@@ -38,6 +38,7 @@
 - `-file-timeout` specifies maximum TTL for file created in file store （e.g. `30m`)
 - `-mount-conf` specifies detailed mount configuration, please refer `mount.yaml` as a reference (Linux only)
 - `-container-init-path` specifies path to `cinit` (do not use, debug only) (Linux only)
+- `-no-fallback` exit the program if creating cgroup failed and trying to fallback to rlimit / rusage mode (Linux only)
 
 ## Environment Variables
 
