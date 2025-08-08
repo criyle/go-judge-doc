@@ -5,7 +5,8 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": ".vitepress/dist"
+        "distDir": ".vitepress/dist",
+        "buildCommand": "npm run build"
       }
     }
   ],
@@ -14,9 +15,15 @@
       "src": "/(.*)",
       "dest": ".vitepress/dist/$1",
       "status": 200
+    },
+    {
+      "src": "/",
+      "dest": ".vitepress/dist/index.html",
+      "status": 200
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  }
+  },
+  "outputDirectory": ".vitepress/dist"
 }
