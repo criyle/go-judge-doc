@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": ".vitepress/dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": ".vitepress/dist/$1",
+      "status": 200
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
