@@ -5,45 +5,14 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": ".vitepress/dist",
-        "buildCommand": "npm run build"
+        "distDir": ".vitepress/dist"
       }
     }
   ],
   "routes": [
     {
-      "src": "^/assets/(.*)",
-      "dest": ".vitepress/dist/assets/$1",
-      "status": 200
-    },
-    {
-      "src": "^/cn/(.*)",
-      "dest": ".vitepress/dist/cn/$1",
-      "status": 200
-    },
-    {
-      "src": "^/(.*)\\.html",
-      "dest": ".vitepress/dist/$1.html",
-      "status": 200
-    },
-    {
-      "src": "^/(.*)",
-      "dest": ".vitepress/dist/$1.html",
-      "status": 200
-    },
-    {
-      "src": "^/$",
-      "dest": ".vitepress/dist/index.html",
-      "status": 200
-    },
-    {
-      "src": ".*",
-      "dest": ".vitepress/dist/404.html",
-      "status": 404
+      "src": "/(.*)",
+      "dest": "/.vitepress/dist/$1"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "outputDirectory": ".vitepress/dist"
+  ]
 }
