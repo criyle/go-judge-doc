@@ -22,7 +22,7 @@
       "status": 200
     },
     {
-      "src": "^/(.*)\.html",
+      "src": "^/(.*)\\.html",
       "dest": ".vitepress/dist/$1.html",
       "status": 200
     },
