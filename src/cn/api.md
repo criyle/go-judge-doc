@@ -49,6 +49,8 @@ interface Cmd {
     copyOutCached?: string[];
     // 指定 copyOut 复制文件大小限制，单位 byte
     copyOutMax?: number;
+    // 在文件大小超过 copyOutTruncate 之后，是否复制截断后的文件
+    copyOutTruncate?: boolean;
 }
 
 interface Result {

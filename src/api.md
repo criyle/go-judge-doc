@@ -53,6 +53,8 @@ interface Cmd {
     copyOutDir: string
     // specifies the max file size to copy out
     copyOutMax?: number; // byte
+    // Whether to truncate file copyOut when exceed copyOutMax
+    copyOutTruncate?: boolean;
 }
 
 interface Result {
