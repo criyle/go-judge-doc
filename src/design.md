@@ -126,39 +126,6 @@ Due to limitation of GO runtime, the memory will not return to OS automatically,
 - `-force-gc-target` default `20m`, the minimal size to trigger GC
 - `-force-gc-interval` default `5s`, the interval to check memory usage
 
-## Benchmark
-
-By `wrk` with `t.lua`: `wrk -s t.lua -c 1 -t 1 -d 30s --latency http://localhost:5050/run`.
-
-However, these results are not the real use cases since the running time depends on the actual program specifies in the request. Normally, the go judge consumes ~1ms more compare to running without sandbox.
-
-```lua
-wrk.method = "POST"
-wrk.body   = '{"cmd":[{"args":["/bin/cat","a.hs"],"env":["PATH=/usr/bin:/bin"],"files":[{"content":""},{"name":"stdout","max":10240},{"name":"stderr","max":10240}],"cpuLimit":10000000000,"memoryLimit":104857600,"procLimit":50,"copyIn":{"a.hs":{"content":"main = putStrLn \\"Hello, World!\\""},"b":{"content":"TEST"}}}]}'
-wrk.headers["Content-Type"] = "application/json;charset=UTF-8"
-```
-
-- Single thread ~800-860 op/s Windows 10 WSL2 @ 5800X
-- Multi thread ~4500-6000 op/s Windows 10 WSL2 @ 5800X
-
-Single thread:
-
-```text
-Running 30s test @ http://localhost:5050/run
-  1 threads and 1 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     1.16ms  132.89us   6.20ms   90.15%
-    Req/Sec     0.87k    19.33     0.91k    85.33%
-  Latency Distribution
-     50%    1.13ms
-     75%    1.18ms
-     90%    1.27ms
-     99%    1.61ms
-  25956 requests in 30.01s, 6.88MB read
-Requests/sec:    864.88
-Transfer/sec:    234.68KB
-```
-
 ## go-sandbox Container Protocol
 
 ```mermaid

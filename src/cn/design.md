@@ -106,39 +106,6 @@ readStat --> e((结束))
 - `-force-gc-target` 默认 `20m`, 堆内存使用超过该值是强制垃圾收集和归还内存
 - `-force-gc-interval` 默认 `5s`, 为后台线程检查的频繁程度
 
-## 压力测试
-
-使用 `wrk` 和 `t.lua`: `wrk -s t.lua -c 1 -t 1 -d 30s --latency http://localhost:5050/run`.
-
-注意，这些结果只是极限情况下的表现，实际情况和使用方式相关。通常沙箱服务相比于直接运行程序，通常有 1 毫秒左右额外延迟。
-
-```lua
-wrk.method = "POST"
-wrk.body   = '{"cmd":[{"args":["/bin/cat","a.hs"],"env":["PATH=/usr/bin:/bin"],"files":[{"content":""},{"name":"stdout","max":10240},{"name":"stderr","max":10240}],"cpuLimit":10000000000,"memoryLimit":104857600,"procLimit":50,"copyIn":{"a.hs":{"content":"main = putStrLn \\"Hello, World!\\""},"b":{"content":"TEST"}}}]}'
-wrk.headers["Content-Type"] = "application/json;charset=UTF-8"
-```
-
-- 单线程 ~800-860 op/s Windows 10 WSL2 @ 5800X
-- 多线程 ~4500-6000 op/s Windows 10 WSL2 @ 5800X
-
-单线程:
-
-```text
-Running 30s test @ http://localhost:5050/run
-  1 threads and 1 connections
-  Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency     1.16ms  132.89us   6.20ms   90.15%
-    Req/Sec     0.87k    19.33     0.91k    85.33%
-  Latency Distribution
-     50%    1.13ms
-     75%    1.18ms
-     90%    1.27ms
-     99%    1.61ms
-  25956 requests in 30.01s, 6.88MB read
-Requests/sec:    864.88
-Transfer/sec:    234.68KB
-```
-
 ## go-sandbox 容器协议
 
 ```mermaid

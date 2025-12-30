@@ -24,7 +24,8 @@
 - `-extra-memory-limit` specifies the additional memory limit to check memory limit exceeded (default 16KiB)
 - `-copy-out-limit` specifies the default file copy out max (default 64MiB)
 - `-open-file-limit` specifies the max number of open files (default 256)
-- `-cpuset` specifies `cpuset.cpus` cgroup for each container (Linux only)
+- `-cpuset` specifies `cpuset.cpus` cgroup for each container (Linux only).
+  - For example, `-cpuset 0,2,4,8` will restrict parallelism of `4` and concurrent requests are assigning individual `cpuset` via cgroup.
 - `-container-cred-start` specifies container `setuid` / `setgid` credential start point (default: 0 (disabled)) (Linux only)
   - for example, by default container 0 will run with 10001 uid & gid and container 1 will run with 10002 uid & gid...
 - `-enable-cpu-rate` enabled `cpu` cgroup to control cpu rate using cfs_quota & cfs_period control (Linux only)
