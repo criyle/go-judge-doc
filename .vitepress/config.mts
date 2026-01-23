@@ -1,7 +1,7 @@
 import { withMermaid } from "vitepress-plugin-mermaid";
 
 // https://vitepress.dev/reference/site-config
-export default withMermaid ({
+export default withMermaid({
   title: "Go Judge Documentation",
   description: "Go Judge Documentation",
   srcDir: "src",
@@ -25,6 +25,7 @@ export default withMermaid ({
           { text: 'File System Mount', link: '/mount' },
           { text: 'Build', link: '/build' },
           { text: 'Scale', link: '/scale' },
+          { text: 'Rootfs', link: '/rootfs' },
         ]
       }
     ],
@@ -60,6 +61,7 @@ export default withMermaid ({
               { text: '文件系统挂载', link: '/cn/mount' },
               { text: '编译', link: '/cn/build' },
               { text: '拓展', link: '/cn/scale' },
+              { text: '根文件系统', link: '/cn/rootfs' }
             ]
           }
         ],

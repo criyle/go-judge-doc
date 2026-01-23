@@ -32,4 +32,3 @@ If you have nix installed, you can install `go-judge` from [nixpkgs](https://sea
 ```sh
 nix-env -iA nixpkgs.go-judge
 ```
-
