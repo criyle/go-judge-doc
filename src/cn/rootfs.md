@@ -63,15 +63,15 @@ mount:
     target: /tmp
     data: size=128m,nr_inodes=4k
 proc: true
-# container work directory
+# 容器工作目录
 workDir: /w
-# container host name
+# 容器主机名
 hostName: go-judge
-# container domain name
+# 容器域名
 domainName: go-judge
-# container user uid
+# 容器 uid
 uid: 1536
-# container user gid
+# 容器 gid
 gid: 1536
 ```
 
@@ -80,99 +80,99 @@ gid: 1536
 ## Alpine
 
 ```sh
-# Find the latest release on the release page
+# 此 URL 为示例，请寻找最新下载镜像
 export ROOTFS_URL=https://dl-cdn.alpinelinux.org/alpine/v3.23/releases/aarch64/alpine-minirootfs-3.23.2-aarch64.tar.gz
 
 mkdir alpine
 cd alpine
 
-# Download the roofs
+# 下载镜像
 wget $ROOTFS_URL -O rootfs.tar.gz
 mkdir rootfs
 tar -xvf rootfs.tar.gz -C rootfs
 cp /etc/resolv.conf ./rootfs/etc/resolv.conf
 
-# Step into the container
+# 进入容器
 unshare -r --fork --pid --mount-proc -R ./rootfs \
     /bin/sh -c "export HOME=/root USER=root LOGNAME=root TERM=xterm-256color; exec /bin/sh"
 
-# Install requirements
+# 安装依赖，请根据需求更改
 apk update && apk add g++
 ```
 
 ## Debian
 
 ```sh
-# Find the latest release on the release page
+# 此 URL 为示例，请寻找最新下载镜像
 export ROOTFS_URL=https://images.linuxcontainers.org/images/debian/trixie/arm64/default/20260120_05%3A24/rootfs.tar.xz
 
 mkdir debian
 cd debian
 
-# Download the roofs
+# 下载镜像
 wget $ROOTFS_URL -O rootfs.tar.xz
 mkdir rootfs
 tar -xvf rootfs.tar.xz -C rootfs
 rm ./rootfs/etc/resolv.conf
 cp /etc/resolv.conf ./rootfs/etc/resolv.conf
 
-# Step into the container
+# 进入容器
 unshare -r --fork --pid --mount-proc -R ./rootfs \
     /bin/sh -c "export HOME=/root USER=root LOGNAME=root TERM=xterm-256color; exec /bin/bash"
 echo 'APT::Sandbox::User "root";' > /etc/apt/apt.conf.d/01sandbox
 
-# Install requirements
+# 安装依赖，请根据需求更改
 apt update && apt install g++
 ```
 
 ## Fedora
 
 ```sh
-# Find the latest release on the release page
+# 此 URL 为示例，请寻找最新下载镜像
 export ROOTFS_URL=https://images.linuxcontainers.org/images/fedora/43/arm64/default/20260120_20%3A33/rootfs.tar.xz
 
 mkdir fedora
 cd fedora
 
-# Download the roofs
+# 下载镜像
 wget $ROOTFS_URL -O rootfs.tar.xz
 mkdir rootfs
 tar -xvf rootfs.tar.xz -C rootfs
 rm ./rootfs/etc/resolv.conf
 cp /etc/resolv.conf ./rootfs/etc/resolv.conf
 
-# Step into the container
+# 进入容器
 unshare -r --fork --pid --mount-proc -R ./rootfs \
     /bin/sh -c "export HOME=/root USER=root LOGNAME=root TERM=xterm-256color; exec /bin/bash"
 
-# Install requirements
+# 安装依赖，请根据需求更改
 dnf install -y g++
 ```
 
 ## Arch Linux
 
 ```sh
-# Find the latest release on the release page
+# 此 URL 为示例，请寻找最新下载镜像
 export ROOTFS_URL=https://images.linuxcontainers.org/images/archlinux/current/arm64/default/20260120_04%3A18/rootfs.tar.xz
 
 mkdir archlinux
 cd archlinux
 
-# Download the roofs
+# 下载镜像
 wget $ROOTFS_URL -O rootfs.tar.xz
 mkdir rootfs
 tar -xvf rootfs.tar.xz -C rootfs
 rm ./rootfs/etc/resolv.conf
 cp /etc/resolv.conf ./rootfs/etc/resolv.conf
 
-# Step into the container
+# 进入容器
 unshare -r --fork --pid --mount-proc -R ./rootfs \
     /bin/sh -c "export HOME=/root USER=root LOGNAME=root TERM=xterm-256color; exec /bin/bash"
 
 sed -i 's/#DisableSandbox/DisableSandbox/' /etc/pacman.conf
 sed -i 's/^CheckSpace/#CheckSpace/' /etc/pacman.conf
 
-# Install requirements
+# 安装依赖，请根据需求更改
 pacman-key --init
 pacman-key --populate archlinuxarm
 pacman -Sy --noconfirm gcc
@@ -191,6 +191,7 @@ sandbox = false
 build-users-group =
 EOF
 
+# 此 URL 为示例，请寻找最新下载镜像
 curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
 source ~/.nix-profile/etc/profile.d/nix.sh
 ```
@@ -198,7 +199,8 @@ source ~/.nix-profile/etc/profile.d/nix.sh
 ## UV
 
 ```sh
+# 此 URL 为示例，请寻找最新下载镜像
 wget https://github.com/astral-sh/uv/releases/download/0.9.26/uv-aarch64-
 unknown-linux-gnu.tar.gz
-tar -xvzf uv-aarch64-unknown-linux-gnu.tar.gz.1 --no-same-owner --strip-components 1
+tar -xvzf uv-aarch64-unknown-linux-gnu.tar.gz --no-same-owner --strip-components 1
 ```
